@@ -19,7 +19,7 @@
         const container = document.getElementById("redoc-container");
 
         function loadDocs(url) {
-            container.innerHTML = ''; // پاک کردن رندر قبلی
+            container.innerHTML = '';
             Redoc.init(url, {
                 hideDownloadButton: true,
                 scrollYOffset: 50,
@@ -35,7 +35,6 @@
             loadDocs(select.value);
         });
 
-        // اولین بار لود کنه
         loadDocs(select.value);
     </script>
 </body>
