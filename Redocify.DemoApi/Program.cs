@@ -12,6 +12,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseStaticFiles();
 app.UseRedocify();
 
 app.UseAuthorization();

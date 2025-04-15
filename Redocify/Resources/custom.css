@@ -1,6 +1,21 @@
 ﻿body {
-    background-color: #f4f4f4;
-    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#toolbar {
+    background-color: #222;
+    padding: 10px;
+    color: white;
+}
+
+    #toolbar select {
+        font-size: 16px;
+        padding: 4px;
+        margin-left: 10px;
+    }
+
+#redoc-container {
+    height: calc(100vh - 50px);
 }

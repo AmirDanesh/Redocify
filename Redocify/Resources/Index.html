@@ -2,10 +2,41 @@
 <html>
 <head>
     <title>Redoc API Docs</title>
-    <link rel="stylesheet" href="custom.css" />
-    <script src="./redoc.standalone.min.js"></script>
+    <link rel="stylesheet" href="/redoc/custom.css" />
+    <script src="/redoc/redoc.standalone.min.js"></script>
 </head>
 <body>
-    <redoc spec-url="{{SWAGGER_JSON_URL}}"></redoc>
+    <div id="toolbar">
+        Select API Version:
+        <select id="api-select">
+            <option value="/swagger/v1/swagger.json">Main API (v1)</option>
+            <option value="https://petstore.swagger.io/v2/swagger.json">PetStore Example</option>
+        </select>
+    </div>
+    <div id="redoc-container"></div>
+    <script>
+        const select = document.getElementById("api-select");
+        const container = document.getElementById("redoc-container");
+
+        function loadDocs(url) {
+            container.innerHTML = ''; // پاک کردن رندر قبلی
+            Redoc.init(url, {
+                hideDownloadButton: true,
+                scrollYOffset: 50,
+                theme: {
+                    colors: {
+                        primary: { main: '#42b983' }
+                    }
+                }
+            }, container);
+        }
+
+        select.addEventListener("change", () => {
+            loadDocs(select.value);
+        });
+
+        // اولین بار لود کنه
+        loadDocs(select.value);
+    </script>
 </body>
 </html>
