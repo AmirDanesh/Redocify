@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Asp.Versioning.ApiExplorer;
+using Redocify.Endpoints;
 
 namespace Redocify
 {
@@ -9,56 +13,40 @@ namespace Redocify
     {
         public static IApplicationBuilder UseRedocify(
             this IApplicationBuilder app,
+            IServiceProvider serviceProvider,
             string route = "/redoc",
             string swaggerUrl = "/swagger/v1/swagger.json")
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            app.Map($"{route}/custom.css", builder =>
+            var apiProvider = serviceProvider.GetService<IApiVersionDescriptionProvider>();
+
+            app.UseSwagger();
+
+            if (apiProvider != null)
             {
-                builder.Run(async context =>
+                app.UseSwaggerUI(options =>
                 {
-                    var cssStream = assembly.GetManifestResourceStream("Redocify.Resources.custom.css");
-                    if (cssStream == null)
+                    foreach (var desc in apiProvider.ApiVersionDescriptions)
                     {
-                        context.Response.StatusCode = 404;
-                        return;
+                        options.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json", desc.GroupName.ToUpperInvariant());
                     }
-
-                    context.Response.ContentType = "text/css";
-                    await cssStream.CopyToAsync(context.Response.Body);
                 });
-            });
 
-            app.Map($"{route}/redoc.standalone.min.js", builder =>
+                app.MapRedocifyEndpoints(apiProvider, route, swaggerUrl);
+            }
+            else
             {
-                builder.Run(async context =>
+                // اگر نسخه‌بندی نبود، یه endpoint ساده فقط برای Redoc بساز
+                app.UseSwaggerUI(c =>
                 {
-                    var jsStream = assembly.GetManifestResourceStream("Redocify.Resources.redoc.standalone.min.js");
-                    if (jsStream == null)
-                    {
-                        context.Response.StatusCode = 404;
-                        return;
-                    }
-
-                    context.Response.ContentType = "application/javascript";
-                    await jsStream.CopyToAsync(context.Response.Body);
+                    c.SwaggerEndpoint(swaggerUrl, "API");
                 });
-            });
 
-            app.Map(route, builder =>
-            {
-                builder.Run(async context =>
-                {
-                    var htmlStream = assembly.GetManifestResourceStream("Redocify.Resources.Index.html");
-                    var reader = new StreamReader(htmlStream!);
-                    var html = await reader.ReadToEndAsync();
-                    html = html.Replace("{{SWAGGER_JSON_URL}}", swaggerUrl);
+                app.MapRedocifyEndpoints(null, route, swaggerUrl);
+            }
 
-                    context.Response.ContentType = "text/html";
-                    await context.Response.WriteAsync(html);
-                });
-            });
+            app.MapRedocifyEndpoints(apiProvider, route, swaggerUrl);
 
             return app;
         }

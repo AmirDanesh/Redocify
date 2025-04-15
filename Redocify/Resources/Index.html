@@ -7,11 +7,8 @@
 </head>
 <body>
     <div id="toolbar">
-        Select API Version:
-        <select id="api-select">
-            <option value="/swagger/v1/swagger.json">Main API (v1)</option>
-            <option value="https://petstore.swagger.io/v2/swagger.json">PetStore Example</option>
-        </select>
+        API Version:
+        <select id="api-select"></select>
     </div>
     <div id="redoc-container"></div>
     <script>
@@ -23,19 +20,49 @@
             Redoc.init(url, {
                 hideDownloadButton: true,
                 scrollYOffset: 50,
+                hideLoading: false,
                 theme: {
                     colors: {
-                        primary: { main: '#42b983' }
+                        primary: { main: '#00bcd4' }
                     }
                 }
             }, container);
         }
 
+        fetch("redoc/apiVersions")
+            .then(res => res.ok ? res.json() : [])
+            .then(versions => {
+                const fallbackVersion = {
+                    name: "default version",
+                    url: "/swagger/v1/swagger.json"
+                };
+
+                // اگر versions خالی یا نامعتبر بود، fallback استفاده کن
+                if (!Array.isArray(versions) || versions.length === 0) {
+                    versions = [fallbackVersion];
+                }
+
+                versions.forEach(v => {
+                    const opt = document.createElement("option");
+                    opt.value = v.url;
+                    opt.textContent = v.name.toUpperCase();
+                    select.appendChild(opt);
+                });
+
+                // لود پیش‌فرض اولین نسخه
+                loadDocs(versions[0].url);
+            })
+            .catch(error => {
+                console.error("Failed to load API versions:", error);
+
+                // در صورت خطا، fallback لود کن
+                loadDocs("/swagger/v1/swagger.json");
+            });
+
+        // سوییچ بین نسخه‌ها
         select.addEventListener("change", () => {
             loadDocs(select.value);
         });
-
-        loadDocs(select.value);
     </script>
 </body>
 </html>
