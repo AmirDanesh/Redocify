@@ -1,0 +1,6 @@
+@Redocify.DemoApi_HostAddress = http://localhost:5044
+
+GET {{Redocify.DemoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
