@@ -1,10 +1,10 @@
-﻿using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Builder;
 
 namespace Redocify.Endpoints
 {
@@ -12,23 +12,21 @@ namespace Redocify.Endpoints
     {
         public static void MapRedocifyEndpoints(
             this IApplicationBuilder app,
-            IApiVersionDescriptionProvider? provider,
+            List<string> groupNames,
             string defaultRoute,
             string swaggerUrl)
         {
-
             var assembly = Assembly.GetExecutingAssembly();
-
             app.Map($"{defaultRoute}/apiVersions", builder =>
             {
                 builder.Run(async context =>
                 {
-                    if (provider is not null)
+                    if (groupNames.Any())
                     {
-                        var versions = provider.ApiVersionDescriptions.Select(x => new
+                        var versions = groupNames.Select(x => new
                         {
-                            name = x.GroupName,
-                            url = $"/swagger/{x.GroupName}/swagger.json"
+                            name = x,
+                            url = $"/swagger/{x}/swagger.json"
                         });
 
                         context.Response.ContentType = "application/json";

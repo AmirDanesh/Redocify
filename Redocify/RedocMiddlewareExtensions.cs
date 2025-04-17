@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Http;
+using Redocify.Endpoints;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Asp.Versioning.ApiExplorer;
-using Redocify.Endpoints;
 
 namespace Redocify
 {
@@ -13,42 +12,50 @@ namespace Redocify
     {
         public static IApplicationBuilder UseRedocify(
             this IApplicationBuilder app,
-            IServiceProvider serviceProvider,
             string route = "/redoc",
             string swaggerUrl = "/swagger/v1/swagger.json")
         {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            var apiProvider = serviceProvider.GetService<IApiVersionDescriptionProvider>();
-
+            app.UseStaticFiles();
             app.UseSwagger();
+            var assembly = Assembly.GetExecutingAssembly();
+            var groupNames = GetGroupNames(app.ApplicationServices);
 
-            if (apiProvider != null)
+            if (groupNames.Any())
             {
                 app.UseSwaggerUI(options =>
                 {
-                    foreach (var desc in apiProvider.ApiVersionDescriptions)
+                    foreach (var desc in groupNames)
                     {
-                        options.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json", desc.GroupName.ToUpperInvariant());
+                        options.SwaggerEndpoint($"/swagger/{desc}/swagger.json", desc.ToUpperInvariant());
                     }
                 });
-
-                app.MapRedocifyEndpoints(apiProvider, route, swaggerUrl);
             }
             else
             {
-                // اگر نسخه‌بندی نبود، یه endpoint ساده فقط برای Redoc بساز
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint(swaggerUrl, "API");
                 });
-
-                app.MapRedocifyEndpoints(null, route, swaggerUrl);
             }
 
-            app.MapRedocifyEndpoints(apiProvider, route, swaggerUrl);
+            app.MapRedocifyEndpoints(groupNames, route, swaggerUrl);
 
             return app;
+        }
+
+        private static List<string> GetGroupNames(IServiceProvider serviceProvider)
+        {
+            var apiProvider = serviceProvider.GetService<Asp.Versioning.ApiExplorer.IApiVersionDescriptionProvider>();
+            var legacyApiProvider = serviceProvider.GetService<Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider>();
+
+            List<string> result = new();
+
+            if (apiProvider is not null)
+                result = apiProvider.ApiVersionDescriptions.Select(x => x.GroupName).ToList();
+            else if (legacyApiProvider is not null)
+                result = legacyApiProvider.ApiVersionDescriptions.Select(x => x.GroupName).ToList();
+
+            return result;
         }
     }
 }

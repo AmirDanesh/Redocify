@@ -8,10 +8,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseStaticFiles();
-
-app.UseStaticFiles();
-app.UseRedocify(app.Services);
+app.UseRedocify();
 
 app.UseAuthorization();
 app.MapControllers();
