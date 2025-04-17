@@ -5,6 +5,7 @@ using Redocify.Endpoints;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Redocify.Configurations;
 
 namespace Redocify
 {
@@ -12,9 +13,12 @@ namespace Redocify
     {
         public static IApplicationBuilder UseRedocify(
             this IApplicationBuilder app,
-            string route = "/redoc",
-            string swaggerUrl = "/swagger/v1/swagger.json")
+            Action<RedocifyConfigs>? options)
         {
+            var configuration = new RedocifyConfigs();
+
+            options?.Invoke(configuration);
+
             app.UseStaticFiles();
             app.UseSwagger();
             var assembly = Assembly.GetExecutingAssembly();
@@ -34,11 +38,11 @@ namespace Redocify
             {
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint(swaggerUrl, "API");
+                    c.SwaggerEndpoint(configuration.SwaggerUrl, "API");
                 });
             }
 
-            app.MapRedocifyEndpoints(groupNames, route, swaggerUrl);
+            app.MapRedocifyEndpoints(groupNames, configuration.LaunchRoute, configuration.SwaggerUrl);
 
             return app;
         }
