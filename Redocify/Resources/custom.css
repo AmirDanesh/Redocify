@@ -1,8 +1,82 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+﻿body, html {
+            font-family: 'Vazir', sans-serif;
+        }
+
+        .menu-content,
+        .menu-content label,
+        .menu-content ul,
+        .menu-content li {
+            background-color: #263238 !important;
+            color: white;
+        }
+
+        .menu-content {
+            position: fixed !important;
+            right: 0 !important;
+            top: 0 !important;
+            width: 280px !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+            z-index: 2 !important;
+        }
+
+        .api-content {
+            margin-right: 280px !important;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+            .api-content .sc-iGgWBj {
+                border-radius: 10px;
+                padding: 20px;
+                margin-right: 15px;
+            }
+
+        .sc-EgOXT span{
+            direction: ltr;
+        }
+
+        .sc-EgOXT .sc-iEXKAA{
+            flex: unset;
+        }
+
+        .kNjBFu {
+            background-color: #ededed;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-bottom: unset;
+            border: 2px solid;
+        }
+
+        h1, h2, h4, p, span {
+            font-family: 'Vazir', sans-serif;
+        }
+
+        code, pre, textarea, input {
+            direction: ltr !important;
+            text-align: left !important;
+            font-family: 'Roboto', monospace !important;
+        }
+
+        .sc-kbousE {
+            display: none;
+        }
+
+        .gwMRTQ {
+            display: none;
+        }
+
+        .Aouot{
+            padding-left: 5px;
+        }
+
+        table .iMGXTw{
+            padding: 10px 5px;
+        }
+
+        ul li label .kbFLfk:hover{
+            color: rgb(147 147 163);
+        }
 
 #toolbar {
     background-color: #222;
