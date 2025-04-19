@@ -8,10 +8,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseRedocify();
+// OR
 app.UseRedocify(opt =>
 {
-    opt.LaunchRoute = "/redoc"; //optional
-    opt.SwaggerUrl = "/swagger/v1/swagger.json"; //optional
+    opt.LaunchRoute = "docs";
+    opt.SwaggerUrl = "swagger/customSwagger.json";
 });
 
 app.UseAuthorization();

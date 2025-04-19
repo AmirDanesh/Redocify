@@ -13,11 +13,10 @@ namespace Redocify
     {
         public static IApplicationBuilder UseRedocify(
             this IApplicationBuilder app,
-            Action<RedocifyConfigs>? options)
+            Action<RedocifyConfigs> options = null)
         {
             var configuration = new RedocifyConfigs();
-
-            options?.Invoke(configuration);
+            if (options != null) options?.Invoke(configuration);
 
             app.UseStaticFiles();
             app.UseSwagger();
