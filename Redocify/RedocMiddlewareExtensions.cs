@@ -49,14 +49,11 @@ namespace Redocify
         private static List<string> GetGroupNames(IServiceProvider serviceProvider)
         {
             var apiProvider = serviceProvider.GetService<Asp.Versioning.ApiExplorer.IApiVersionDescriptionProvider>();
-            var legacyApiProvider = serviceProvider.GetService<Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider>();
 
             List<string> result = new();
 
             if (apiProvider is not null)
                 result = apiProvider.ApiVersionDescriptions.Select(x => x.GroupName).ToList();
-            else if (legacyApiProvider is not null)
-                result = legacyApiProvider.ApiVersionDescriptions.Select(x => x.GroupName).ToList();
 
             return result;
         }

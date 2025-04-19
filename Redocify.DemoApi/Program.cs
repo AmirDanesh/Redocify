@@ -12,7 +12,7 @@ app.UseRedocify();
 // OR
 app.UseRedocify(opt =>
 {
-    opt.LaunchRoute = "docs";
+    opt.LaunchRoute = "";
     opt.SwaggerUrl = "swagger/customSwagger.json";
 });
 
