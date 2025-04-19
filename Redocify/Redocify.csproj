@@ -3,7 +3,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Redocify</PackageId>
-		<Version>6.0.1</Version>
+		<Version>6.0.2</Version>
 		<Authors>Amir Daneshvar</Authors>
 		<Description>ASP.NET Core middleware to serve Redoc using Swagger JSON</Description>
 		<RepositoryUrl>https://github.com/AmirDanesh/Redocify.git</RepositoryUrl>
